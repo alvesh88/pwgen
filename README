@@ -1,0 +1,21 @@
+*********************************************************************
+*                              pwgen                                *
+*********************************************************************
+
+pwgen is a simple password generator/manager that doesn't store the
+passwords, but instead regenerates them evrey time you want to use
+them. This is done by takeing a SHA512 hash of your master password
+and the name of the password. This hash is then used to generate
+a password of a chosen length consiting of lower and uppercase
+letters and numbers. Optionally also punctuation characters can be
+used in the passwords. A list of previously used names will be stored
+in ~/.pwgen
+
+pwgen was originally inspired by this thread in the Ubuntu forums:
+http://ubuntuforums.org/showthread.php?t=208449
+
+pwgen is written in python3 with a tkinter interface, so a complete
+python3 installation should be enough to use it. With the -c option
+pwgen can also be used on the console, without opening a gui or even
+having the tkinter modules installed. The password will then be written
+to stderr so it can easily be redirected.
