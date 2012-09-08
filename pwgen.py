@@ -84,6 +84,7 @@ def define_gui(tkinter):
             self.master = master
             self.options = options
             self.showing = False
+            self.sm = tkinter.IntVar()
             self.use_punctuation = tkinter.IntVar()
             self.rfile = os.path.expanduser(os.path.join('~', '.pwgen'))
             if os.path.exists(self.rfile):
@@ -103,36 +104,48 @@ def define_gui(tkinter):
 
         def createwidgets(self):
             row = 0
-            self.mpw1label = tkinter.ttk.Label(self)
-            self.mpw1label['text'] = 'The master password:'
-            self.mpw1 = tkinter.ttk.Entry(self)
-            self.mpw1['show'] = '*'
+            self.mpw1label = tkinter.ttk.Label(self,
+                                text='The master password:')
+            self.mpw1 = tkinter.ttk.Entry(self,
+                                show='*')
             self.mpw1label.grid(column=0, row=row,
                                 sticky='w', pady=3, padx=3)
             self.mpw1.grid(column=1, row=row, sticky='w', pady=3)
             row += 1
 
             if not self.options.unsafe:
-                self.mpw2label = tkinter.ttk.Label(self)
-                self.mpw2label['text'] = 'Retype master password:'
-                self.mpw2 = tkinter.ttk.Entry(self)
-                self.mpw2['show'] = '*'
+                self.mpw2label = tkinter.ttk.Label(self,
+                                    text='Retype master password:')
+                self.mpw2 = tkinter.ttk.Entry(self,
+                                    show='*')
                 self.mpw2label.grid(column=0, row=row,
                                     sticky='w', pady=3, padx=3)
                 self.mpw2.grid(column=1, row=row, sticky='w', pady=3)
                 row += 1
 
-            self.reasonlabel = tkinter.ttk.Label(self)
-            self.reasonlabel['text'] = 'The reason:'
-            self.reason = tkinter.ttk.Combobox(self)
-            self.reason['values'] = sorted(self.reasons)
+            self.smlabel = tkinter.ttk.Label(self,
+                                text='Show master password')
+            self.smbox = tkinter.ttk.Checkbutton(self,
+                                variable=self.sm,
+                                command=self.showmpwd)
+
+            self.smlabel.grid(column=0, row=row,
+                                    sticky='w', pady=3,padx=3)
+            self.smbox.grid(column=1, row=row, sticky='w',
+                                    pady=3, padx=3)
+            row += 1
+
+            self.reasonlabel = tkinter.ttk.Label(self,
+                                    text='The reason:')
+            self.reason = tkinter.ttk.Combobox(self,
+                                values=sorted(self.reasons))
             self.reasonlabel.grid(column=0, row=row,
                                   sticky='w', pady=3, padx=3)
             self.reason.grid(column=1, row=row, sticky='w', pady=3)
             row += 1
 
-            self.lengthlabel = tkinter.ttk.Label(self)
-            self.lengthlabel['text'] = 'The password size:'
+            self.lengthlabel = tkinter.ttk.Label(self,
+                                    text='The password size:')
             self.length = tkinter.ttk.Entry(self)
             self.length.insert(tkinter.END, '16')
             self.lengthlabel.grid(column=0, row=row,
@@ -141,24 +154,24 @@ def define_gui(tkinter):
             row += 1
 
             self.punctuation = tkinter.ttk.Checkbutton(self,
-                                    variable=self.use_punctuation)
-            self.punctuation['text'] = 'Use punctuation characters'
+                                    variable=self.use_punctuation,
+                                    text='Use punctuation characters')
             self.punctuation.grid(column=0, columnspan=2, row=row,
                                   pady=3, padx=3)
             row += 1
 
-            self.showbutton = tkinter.ttk.Button(self)
-            self.showbutton['text'] = 'Show password'
-            self.showbutton['command'] = self.showpwd
-            self.copybutton = tkinter.ttk.Button(self)
-            self.copybutton['text'] = 'Copy password to clipboard'
-            self.copybutton['command'] = self.copypwd
+            self.showbutton = tkinter.ttk.Button(self,
+                                text='Show password',
+                                command= self.showpwd)
+            self.copybutton = tkinter.ttk.Button(self,
+                                text='Copy password to clipboard',
+                                command=self.copypwd)
             self.showbutton.grid(column=0, row=row, pady=3)
             self.copybutton.grid(column=1, row=row, pady=3)
             row += 1
 
-            self.pwlabel = tkinter.ttk.Label(self)
-            self.pwlabel['text'] = 'password'
+            self.pwlabel = tkinter.ttk.Label(self,
+                                text='password')
             self.pwlabel.grid(columnspan=2, row=row, pady=10)
 
         def generate(self):
@@ -206,6 +219,16 @@ def define_gui(tkinter):
             if pwd is not None:
                 self.master.clipboard_clear()
                 self.master.clipboard_append(pwd)
+
+        def showmpwd(self):
+            if self.sm.get() == 1:
+                self.mpw1['show'] = ''
+                if not self.options.unsafe:
+                    self.mpw2['show'] = ''
+            else:
+                self.mpw1['show'] = '*'
+                if not self.options.unsafe:
+                    self.mpw2['show'] = '*'
 
     return Application
 
